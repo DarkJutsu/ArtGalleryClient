@@ -4,6 +4,7 @@ import { getOferta } from "../api/oferta.api";
 import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
+import { Calendar } from "primereact/calendar";
 
 import classNames from "classnames";
 import { Dialog } from "primereact/dialog";
@@ -17,6 +18,8 @@ export function ViewExpo() {
   const [obraId, setObraId] = useState([]);
   const [oferta, setOferta] = useState([]);
   const [tituloExpo, setTituloExpo] = useState(null);
+
+  const [inputFecha, setInputFecha] = useState(null);
 
   const [obraExEdit, setObraExEdit] = useState([]);
   const [dDialog, setDDialog] = useState(false);
@@ -108,7 +111,12 @@ export function ViewExpo() {
   };
   let empty = {
     id: 0,
-    titulo: "",
+    nombre: "",
+    telefono: "",
+    monto: "",
+    fecha: "",
+    aceptado: "",
+    obra: "",
   };
   const openNew = () => {
     setObraExEdit(empty);
@@ -146,6 +154,19 @@ export function ViewExpo() {
     </div>
   );
 
+  const formatFechaInput = (fecha) => {
+    const fechaJava = fecha;
+    const fechaJS = new Date(fechaJava);
+    const dia = fechaJS.getDate();
+    const mes = fechaJS.getMonth() + 1;
+    const anio = fechaJS.getFullYear();
+    const fechaFormateada = `${anio}-${mes.toString().padStart(2, "0")}-${dia
+      .toString()
+      .padStart(2, "0")}`;
+
+    return fechaFormateada;
+  };
+
   return (
     <div>
       <h2 className="text-2xl ">Exposición</h2>
@@ -182,92 +203,72 @@ export function ViewExpo() {
         onHide={hideDialog}
       >
         <div className="p-field">
-          <label htmlFor="name">Titulo</label>
+          <label htmlFor="name">Nombre</label>
           <InputText
             id="name"
-            value={obraExEdit.titulo}
-            onChange={(e) => onInputChange(e, "titulo")}
+            value={obraExEdit.nombre}
+            onChange={(e) => onInputChange(e, "nombre")}
             required
             autoFocus
             className={classNames({
-              "p-invalid": submitted && !obraExEdit.titulo,
+              "p-invalid": submitted && !obraExEdit.nombre,
             })}
           />
-          {submitted && !obraExEdit.titulo && (
-            <small className="p-invalid">Titulo is required.</small>
+          {submitted && !obraExEdit.nombre && (
+            <small className="p-invalid">nombre is required.</small>
           )}
         </div>
-        {/* <div className="p-field pt-3">
-          <label htmlFor="name">Precio Salida</label>
+        <div className="p-field pt-3">
+          <label htmlFor="name">Telefono</label>
           <InputNumber
             id="price"
-            value={obraEdit.precioSalida}
-            onValueChange={(e) => onInputChange(e, "precioSalida")}
+            value={obraExEdit.telefono}
+            onValueChange={(e) => onInputChange(e, "telefono")}
+            required
+            className={classNames({
+              "p-invalid": submitted && !obraExEdit.telefono,
+            })}
+          />
+          {submitted && !obraExEdit.telefono && (
+            <small className="p-invalid">Precio Salida is required.</small>
+          )}
+        </div>
+        <div className="p-field pt-3">
+          <label htmlFor="name">Oferta</label>
+          <InputNumber
+            id="price"
+            value={obraExEdit.monto}
+            onValueChange={(e) => onInputChange(e, "monto")}
             mode="currency"
             currency="USD"
             locale="en-US"
             required
             className={classNames({
-              "p-invalid": submitted && !obraEdit.precioSalida,
+              "p-invalid": submitted && !obraExEdit.monto,
             })}
           />
-          {submitted && !obraEdit.precioSalida && (
+          {submitted && !obraExEdit.monto && (
             <small className="p-invalid">Precio Salida is required.</small>
           )}
         </div>
         <div className="p-field pt-3">
-          <label htmlFor="name">Número Registro</label>
-          <InputText
-            id="name"
-            value={obraEdit.numeroRegistro}
-            onChange={(e) => onInputChange(e, "numeroRegistro")}
-            required
+          <label htmlFor="name">Fecha de Inauguracion</label>
+          <Calendar
+            id="spanish"
+            value={obraExEdit.fecha}
+            onChange={(e) => setInputFecha(e.value)}
+            dateFormat="dd/mm/yy"
             className={classNames({
-              "p-invalid": submitted && !obraEdit.numeroRegistro,
+              "p-invalid": submitted && !obraExEdit.fecha,
             })}
           />
-          {submitted && !obraEdit.numeroRegistro && (
+          {console.log(inputFecha)}
+          {submitted && !obraExEdit.fecha && (
             <small className="p-invalid">
-              Número Registro Salida is required.
+              Fecha de Inauguracion is required.
             </small>
           )}
-        </div> */}
-        {/* <div className="p-field pt-3">
-          <label htmlFor="name">Propietario</label>
-          <Dropdown
-            value={obraEdit.propietario}
-            options={selectPropi}
-            onChange={onPChange}
-            optionLabel="nombre"
-            filter
-            showClear
-            filterBy="nombre"
-            placeholder="Select a Propietario"
-            valueTemplate={selectedPTemplate}
-            itemTemplate={pOptionTemplate}
-          />
-          {submitted && !obraEdit.propietario && (
-            <small className="p-invalid">Propietario Salida is required.</small>
-          )}
         </div>
-        <div className="p-field pt-3">
-          <label htmlFor="name">Exposiciones</label>
-          <Dropdown
-            value={obraEdit.exposicion}
-            options={selectExpo}
-            onChange={onExChange}
-            optionLabel="nombre"
-            filter
-            showClear
-            filterBy="nombre"
-            placeholder="Select a Propietario"
-            valueTemplate={selectedExTemplate}
-            itemTemplate={exOptionTemplate}
-          />
-          {submitted && !obraEdit.exposicion && (
-            <small className="p-invalid">Propietario Salida is required.</small>
-          )}
-        </div> */}
       </Dialog>
     </div>
   );
